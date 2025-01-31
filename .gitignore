@@ -1,0 +1,15 @@
+/.build
+/.build.*
+/.swiftpm
+/.vscode
+
+/node_modules
+/package-lock.json
+
+/Bundle/
+/BundleRoot/
+
+/Packages/
+/Package.resolved
+
+/*.wasm

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+export PATH=.build.host/release:$PATH
+
+set -e
+set -x
+
+swift build -c release \
+    --product bson-inspect-frontend \
+    --scratch-path .build.host
+
+PRODUCT_VERSION=$(bson-inspect-frontend version)
+
+swift build -c release \
+    --product bson-inspect \
+    --swift-sdk 6.0.2-RELEASE-wasm32-unknown-wasi \
+    -Xswiftc -Xclang-linker -Xswiftc -mexec-model=reactor -Xlinker --export=__main_argc_argv
+
+archer init -w $PRODUCT_VERSION/main.wasm -o Bundle
+archer crush .build/release/bson-inspect.wasm -o Bundle/main.wasm
+
+mkdir -p BundleRoot
+bson-inspect-frontend generate-landing-page > BundleRoot/index.html
+# esbuild --servedir does not support symlinks
+cp -rf Bundle BundleRoot/$PRODUCT_VERSION
