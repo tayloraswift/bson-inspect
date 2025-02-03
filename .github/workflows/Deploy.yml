@@ -35,7 +35,7 @@ jobs:
                     curl \
                         -L https://download.swiftinit.org/archer/$ARCHER_VERSION/$ARCHER_PLATFORM/archer.tar.gz \
                         -o archer.tar
-                    tar -xz archer.tar
+                    tar -xf archer.tar
                     echo "$PATH:$PWD" >> $GITHUB_PATH
 
             -   name: Build Application
