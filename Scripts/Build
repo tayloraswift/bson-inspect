@@ -9,19 +9,19 @@ DEPLOY_URL="preview"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        ( --deploy-url )
+        --deploy-url )
         shift
         DEPLOY_URL=$1
         shift
         ;;
 
-        ( --sdk )
+        --sdk )
         shift
         SWIFTWASM_SDK=$1
         shift
         ;;
 
-        ( * )
+        * )
         echo "Unknown argument '$1'"
         exit 1
         ;;
@@ -53,9 +53,9 @@ bson-inspect-frontend generate-landing-page $DEPLOY_URL > BundleRoot/index.html
 # Are we deploying to a local directory? If so, copy the Bundle there,
 # because `esbuild --servedir` does not support symlinks
 case $DEPLOY_URL in
-    (http://* | https://*)
+    http://* | https://*)
         ;;
-    (*)
+    *)
         cp -rf Bundle BundleRoot/$DEPLOY_URL
         exit
         ;;
