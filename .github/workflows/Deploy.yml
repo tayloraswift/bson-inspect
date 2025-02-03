@@ -54,9 +54,10 @@ jobs:
                     echo "$PATH:$PWD" >> $GITHUB_PATH
 
             -   name: Build Application
-                run: Scripts/Build \
-                    --deploy-url https://bsoninspect.dev/$DEPLOY_VERSION \
-                    --sdk 6.0.2-RELEASE-wasm32-unknown-wasi
+                run: |
+                    Scripts/Build \
+                        --deploy-url https://bsoninspect.dev/$DEPLOY_VERSION \
+                        --sdk 6.0.2-RELEASE-wasm32-unknown-wasi
 
             -   name: Deploy Application
                 run: Scripts/Deploy
