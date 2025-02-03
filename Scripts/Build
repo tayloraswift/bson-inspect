@@ -4,17 +4,24 @@ export PATH=.build/release:$PATH
 
 set -e
 
+SWIFTWASM_SDK="6.0.2-RELEASE-wasm32-unknown-wasi"
 DEPLOY_URL="preview"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --deploy-url )
+        ( --deploy-url )
         shift
         DEPLOY_URL=$1
         shift
         ;;
 
-        * )
+        ( --sdk )
+        shift
+        SWIFTWASM_SDK=$1
+        shift
+        ;;
+
+        ( * )
         echo "Unknown argument '$1'"
         exit 1
         ;;
@@ -23,13 +30,14 @@ done
 
 set -x
 
+swift --version
 swift build -c release \
     --product bson-inspect-frontend
 
 swift build -c release \
     --product bson-inspect \
     --scratch-path .build.wasm \
-    --swift-sdk 6.0.2-RELEASE-wasm32-unknown-wasi \
+    --swift-sdk $SWIFTWASM_SDK \
     -Xswiftc -Xclang-linker -Xswiftc -mexec-model=reactor -Xlinker --export=__main_argc_argv
 
 archer init \
