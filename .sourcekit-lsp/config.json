@@ -1,6 +1,0 @@
-{
-    "swiftPM":
-    {
-        "swiftSDK": "wasm32-unknown-wasi"
-    }
-}

@@ -9,17 +9,19 @@ extension Main
             commandName: "generate-landing-page",
             abstract: "Generate the landing page for BSON Inspector")
 
+        @Argument
+        var url:String
+
         func run()
         {
-            let html:HTML = Self.html(version: Version.string)
-            print("\(html)")
+            print("\(self.html)")
         }
     }
 }
 extension Main.GenerateLandingPage
 {
     private
-    static func html(version:String) -> HTML
+    var html:HTML
     {
         .init
         {
@@ -35,7 +37,7 @@ extension Main.GenerateLandingPage
                     }
                     $0[.script]
                     {
-                        $0.src = "\(version)/main.js"
+                        $0.src = "\(self.url)/main.js"
                     }
                     $0[.title] = "BSON Inspector"
                 }

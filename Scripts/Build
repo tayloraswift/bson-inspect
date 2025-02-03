@@ -1,25 +1,54 @@
 #!/bin/bash
 
-export PATH=.build.host/release:$PATH
+export PATH=.build/release:$PATH
 
 set -e
+
+DEPLOY_URL="preview"
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --deploy-url )
+        shift
+        DEPLOY_URL=$1
+        shift
+        ;;
+
+        * )
+        echo "Unknown argument '$1'"
+        exit 1
+        ;;
+    esac
+done
+
 set -x
 
 swift build -c release \
-    --product bson-inspect-frontend \
-    --scratch-path .build.host
-
-PRODUCT_VERSION=$(bson-inspect-frontend version)
+    --product bson-inspect-frontend
 
 swift build -c release \
     --product bson-inspect \
+    --scratch-path .build.wasm \
     --swift-sdk 6.0.2-RELEASE-wasm32-unknown-wasi \
     -Xswiftc -Xclang-linker -Xswiftc -mexec-model=reactor -Xlinker --export=__main_argc_argv
 
-archer init -w $PRODUCT_VERSION/main.wasm -o Bundle
-archer crush .build/release/bson-inspect.wasm -o Bundle/main.wasm
+archer init \
+    -w $DEPLOY_URL/main.wasm \
+    -J .build.wasm/release/JavaScriptKit_JavaScriptKit.resources \
+    -o Bundle
+
+archer crush .build.wasm/release/bson-inspect.wasm -o Bundle/main.wasm
 
 mkdir -p BundleRoot
-bson-inspect-frontend generate-landing-page > BundleRoot/index.html
-# esbuild --servedir does not support symlinks
-cp -rf Bundle BundleRoot/$PRODUCT_VERSION
+bson-inspect-frontend generate-landing-page $DEPLOY_URL > BundleRoot/index.html
+
+# Are we deploying to a local directory? If so, copy the Bundle there,
+# because `esbuild --servedir` does not support symlinks
+case $DEPLOY_URL in
+    (http://* | https://*)
+        ;;
+    (*)
+        cp -rf Bundle BundleRoot/$DEPLOY_URL
+        exit
+        ;;
+esac

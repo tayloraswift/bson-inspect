@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if [ -z $DEPLOY_VERSION ]; then
+    echo "DEPLOY_VERSION environment variable not set"
+    exit 1
+fi
+
+set -e
+set -x
+
+aws s3 cp BundleRoot/index.html \
+    s3://tayloraswift-apps/bson-inspect/index.html \
+    --content-type text/html
+
+cd Bundle
+
+for file in *.js; do
+    gzip -k9 $file
+    aws s3 cp $file.gz \
+        s3://tayloraswift-apps/bson-inspect/$DEPLOY_VERSION/$file \
+        --content-encoding gzip \
+        --content-type application/javascript
+done
+
+for file in *.wasm; do
+    gzip -k9 $file
+    aws s3 cp $file.gz \
+        s3://tayloraswift-apps/bson-inspect/$DEPLOY_VERSION/$file \
+        --content-encoding gzip \
+        --content-type application/wasm
+done

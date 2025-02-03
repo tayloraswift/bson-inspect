@@ -21,26 +21,7 @@ let package:Package = .init(name: "test",
 
         .executableTarget(name: "BSONViewerFrontend",
             dependencies: [
-                .target(name: "_GitVersion"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "HTML", package: "swift-dom"),
             ]),
-
-        .target(name: "_GitVersion",
-            cSettings: [
-                .define("SWIFTPM_GIT_VERSION", to: "\"\(version)\"")
-            ]),
     ])
-
-var version:String
-{
-    if  let git:GitInformation = Context.gitInformation
-    {
-        let base:String = git.currentTag ?? git.currentCommit
-        return git.hasUncommittedChanges ? "\(base) (modified)" : base
-    }
-    else
-    {
-        return "(untracked)"
-    }
-}

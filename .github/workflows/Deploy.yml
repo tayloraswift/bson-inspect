@@ -1,0 +1,45 @@
+name: deploy
+
+on:
+    workflow_dispatch:
+    #   We build semver tags, and the master branch.
+    push:
+        branches: [ master ]
+        tags:
+            -   '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+    linux:
+        runs-on: ubuntu-24.04
+        name: Deploy
+        env:
+            DEPLOY_VERSION: ${{ github.head_ref || github.ref_name }}
+        steps:
+            -   name: Setup AWS CLI
+                uses: aws-actions/configure-aws-credentials@v1
+                with:
+                    aws-secret-access-key: ${{ secrets.AWS_S3_ACCESS_SECRET }}
+                    aws-access-key-id: ${{ vars.AWS_S3_ACCESS_KEY }}
+                    aws-region: us-east-1
+
+            -   name: Checkout repository
+                uses: actions/checkout@v3
+
+            -   name: Install Archer
+                env:
+                    ARCHER_PLATFORM: "Ubuntu-24.04-X64"
+                    ARCHER_VERSION: "0.1.0"
+                run: |
+                    mkdir -p Archer
+                    cd Archer
+                    curl \
+                        -L https://download.swiftinit.org/archer/$ARCHER_VERSION/$ARCHER_PLATFORM/archer.tar.gz \
+                        -o archer.tar
+                    tar -xz archer.tar
+                    echo "$PATH:$PWD" >> $GITHUB_PATH
+
+            -   name: Build Application
+                run: Scripts/Build --deploy-url https://bsoninspect.dev/$DEPLOY_VERSION
+
+            -   name: Deploy Application
+                run: Scripts/Deploy
