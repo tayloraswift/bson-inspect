@@ -2,9 +2,7 @@ name: deploy
 
 on:
     workflow_dispatch:
-    #   We build semver tags, and the master branch.
     push:
-        branches: [ master ]
         tags:
             -   '[0-9]+.[0-9]+.[0-9]+'
 
