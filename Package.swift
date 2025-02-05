@@ -10,7 +10,7 @@ let package:Package = .init(name: "test",
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.5.0"),
         .package(url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.21.0"),
         .package(url: "https://github.com/tayloraswift/swift-bson", branch: "swift-78802"),
-        .package(url: "https://github.com/tayloraswift/swift-dom", from: "1.1.1"),
+        .package(url: "https://github.com/tayloraswift/swift-dom", from: "1.1.2"),
     ],
     targets: [
         .executableTarget(name: "BSONViewer",

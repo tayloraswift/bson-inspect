@@ -23,7 +23,7 @@ extension Main.GenerateLandingPage
     private
     var html:HTML
     {
-        .init
+        .document
         {
             $0[.html, { $0.lang = "en" }]
             {
@@ -35,8 +35,15 @@ extension Main.GenerateLandingPage
                         $0.name = "viewport"
                         $0.content = "width=device-width, initial-scale=1.0"
                     }
+                    $0[.link]
+                    {
+                        $0.href = "\(self.url)/main.wasm"
+                        $0.rel = .preload
+                        $0.as = "fetch"
+                    }
                     $0[.script]
                     {
+                        $0.defer = true
                         $0.src = "\(self.url)/main.js"
                     }
                     $0[.title] = "BSON Inspector"
