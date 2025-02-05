@@ -53,7 +53,7 @@ bson-inspect-frontend generate-landing-page $DEPLOY_URL > BundleRoot/index.html
 # Are we deploying to a local directory? If so, copy the Bundle there,
 # because `esbuild --servedir` does not support symlinks
 case $DEPLOY_URL in
-    http://* | https://*)
+    http://* | https://* | /*)
         ;;
     *)
         cp -rf Bundle BundleRoot/$DEPLOY_URL

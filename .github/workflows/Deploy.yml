@@ -54,7 +54,7 @@ jobs:
             -   name: Build Application
                 run: |
                     Scripts/Build \
-                        --deploy-url https://bsoninspect.dev/$DEPLOY_VERSION \
+                        --deploy-url /$DEPLOY_VERSION \
                         --sdk 6.0.2-RELEASE-wasm32-unknown-wasi
 
             -   name: Deploy Application
