@@ -40,6 +40,7 @@ extension Main.GenerateLandingPage
                         $0.href = "\(self.url)/main.wasm"
                         $0.rel = .preload
                         $0.as = "fetch"
+                        $0.crossorigin = true
                     }
                     $0[.script]
                     {
